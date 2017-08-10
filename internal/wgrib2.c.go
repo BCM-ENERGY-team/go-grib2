@@ -20,7 +20,7 @@ var output_order output_order_type = wesn
 var output_order_wanted output_order_type = wesn
 
 // #define DEFINED_VAL(x) ((x) < UNDEFINED_LOW || (x) > UNDEFINED_HIGH)
-func DEFINED_VAL(x float) bool {
+func DEFINED_VAL(x float32) bool {
 	return (x) < UNDEFINED_LOW || (x) > UNDEFINED_HIGH
 }
 

@@ -18,7 +18,7 @@ package internal
 	return err;
  }
 */
-func get_nxny(sec [][]unsigned_char, nx *int, ny *int, npnts *unsigned_int, res *int, scan *int, n_variable_dim *int, variable_dim *[]int, raw_variable_dim *[]int) (err error) {
+func get_nxny(sec [][]byte, nx *int, ny *int, npnts *unsigned_int, res *int, scan *int, n_variable_dim *int, variable_dim *[]int, raw_variable_dim *[]int) (err error) {
 	var nxx, nyy unsigned_int
 
 	err = get_nxny_(sec, &nxx, &nyy, npnts, res, scan, n_variable_dim, variable_dim, raw_variable_dim)
@@ -186,10 +186,10 @@ int get_nxny_(unsigned char **sec, unsigned int *nx, unsigned int *ny, unsigned 
     return 0;
 }
 */
-func get_nxny_(sec [][]unsigned_char, nx *unsigned_int, ny *unsigned_int, npnts *unsigned_int, res *int, scan *int, n_variable_dim *int, variable_dim *[]int, raw_variable_dim *[]int) error {
+func get_nxny_(sec [][]byte, nx *unsigned_int, ny *unsigned_int, npnts *unsigned_int, res *int, scan *int, n_variable_dim *int, variable_dim *[]int, raw_variable_dim *[]int) error {
 	var grid_template, n_var_dim, i, j, n_octets, center int
 	var npoints, n unsigned_int
-	var gds, p []unsigned_char
+	var gds, p []byte
 
 	center = GB2_Center(sec)
 	grid_template = code_table_3_1(sec)

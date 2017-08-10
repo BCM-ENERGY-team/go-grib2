@@ -6,20 +6,20 @@ package internal
  * supported: 0 (simple), 4 (ieee), 40 (jpeg), 41(png), 42(aec)
  *
  * input:  sec[]
- *         float data[npnts]
+ *         float32 data[npnts]
  *
  */
-func unpk_grib(sec [][]unsigned_char, data []float) error {
+func unpk_grib(sec [][]byte, data []float32) error {
 
 	var packing, bitmap_flag, nbits int
 	var ndata, ii unsigned_int
-	var mask_pointer []unsigned_char
-	var mask unsigned_char
-	var ieee, p []unsigned_char
-	var tmp float
-	// float reference, tmp;
-	var reference double
-	var bin_scale, dec_scale, b double
+	var mask_pointer []byte
+	var mask byte
+	var ieee, p []byte
+	var tmp float32
+	// float32 reference, tmp;
+	var reference float64
+	var bin_scale, dec_scale, b float64
 
 	packing = code_table_5_0(sec)
 	// ndata = (int) GB2_Sec3_npts(sec);
@@ -67,13 +67,13 @@ func unpk_grib(sec [][]unsigned_char, data []float) error {
 	} else if packing == 0 || packing == 61 { // simple grib1 packing  61 -- log preprocessing
 
 		p = sec[5]
-		reference = double(ieee2flt(p[11:]))
+		reference = float64(ieee2flt(p[11:]))
 		bin_scale = Int_Power(2.0, int2(p[15:]))
 		dec_scale = Int_Power(10.0, -int2(p[17:]))
 		nbits = int(p[19])
 		b = 0.0
 		if packing == 61 {
-			b = double(ieee2flt(p[20:]))
+			b = float64(ieee2flt(p[20:]))
 		}
 
 		if bitmap_flag != 0 && bitmap_flag != 254 && bitmap_flag != 255 {
@@ -81,9 +81,9 @@ func unpk_grib(sec [][]unsigned_char, data []float) error {
 		}
 
 		if nbits == 0 {
-			tmp = float(reference * dec_scale)
+			tmp = float32(reference * dec_scale)
 			if packing == 61 {
-				tmp = float(exp(double(tmp)) - b)
+				tmp = float32(exp(float64(tmp)) - b)
 			} // remove log prescaling
 			if bitmap_flag == 255 {
 				for ii = 0; ii < ndata; ii++ {
@@ -126,7 +126,7 @@ func unpk_grib(sec [][]unsigned_char, data []float) error {
 			// #pragma omp parallel for private(ii) schedule(static)
 			for ii = 0; ii < ndata; ii++ {
 				if DEFINED_VAL(data[ii]) {
-					data[ii] = float(exp(double(data[ii])) - b)
+					data[ii] = float32(exp(float64(data[ii])) - b)
 				}
 			}
 		}

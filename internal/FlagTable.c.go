@@ -8,8 +8,8 @@ int flag_table_3_3(unsigned char **sec) {
     return (int) *p;
 }
 */
-func flag_table_3_3(sec [][]unsigned_char) int {
-	var p []unsigned_char
+func flag_table_3_3(sec [][]byte) int {
+	var p []byte
 	p = flag_table_3_3_location(sec)
 	if p == nil {
 		return -1
@@ -63,9 +63,9 @@ unsigned char *flag_table_3_3_location(unsigned char **sec) {
 }
 */
 
-func flag_table_3_3_location(sec [][]unsigned_char) []unsigned_char {
+func flag_table_3_3_location(sec [][]byte) []byte {
 	var grid_template, center int
-	var gds []unsigned_char
+	var gds []byte
 
 	grid_template = code_table_3_1(sec)
 	center = GB2_Center(sec)
@@ -103,8 +103,8 @@ int flag_table_3_4(unsigned char **sec) {
     return (int) *p;
 }
 */
-func flag_table_3_4(sec [][]unsigned_char) int {
-	var p []unsigned_char
+func flag_table_3_4(sec [][]byte) int {
+	var p []byte
 	p = flag_table_3_4_location(sec)
 	if p == nil {
 		return -1
@@ -173,9 +173,9 @@ unsigned char *flag_table_3_4_location(unsigned char **sec) {
 }
 */
 
-func flag_table_3_4_location(sec [][]unsigned_char) []unsigned_char {
+func flag_table_3_4_location(sec [][]byte) []byte {
 	var grid_template, center int
-	var gds []unsigned_char
+	var gds []byte
 
 	gds = sec[3]
 	grid_template = code_table_3_1(sec)

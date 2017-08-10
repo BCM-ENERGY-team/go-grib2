@@ -1,7 +1,7 @@
 package internal
 
 /*
-int get_latlon(unsigned char **sec, double **lon, double **lat) {
+int get_latlon(unsigned char **sec, float64 **lon, float64 **lat) {
 
     int grid_template;
 
@@ -40,7 +40,7 @@ int get_latlon(unsigned char **sec, double **lon, double **lat) {
     return 0;
 }
 */
-func get_latlon(sec [][]unsigned_char, lon *[]double, lat *[]double) error {
+func get_latlon(sec [][]byte, lon *[]float64, lat *[]float64) error {
 
 	var grid_template int
 

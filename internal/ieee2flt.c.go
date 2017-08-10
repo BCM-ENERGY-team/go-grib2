@@ -10,34 +10,34 @@ package internal
  * ansi C
  */
 /*
- float ieee2flt(unsigned char *ieee) {
-	double fmant;
+ float32 ieee2flt(unsigned char *ieee) {
+	float64 fmant;
 	int exp;
 
         if ((ieee[0] & 127) == 0 && ieee[1] == 0 && ieee[2] == 0 && ieee[3] == 0)
 	   return (float) 0.0;
 
 	exp = ((ieee[0] & 127) << 1) + (ieee[1] >> 7);
-	fmant = (double) ((int) ieee[3] + (int) (ieee[2] << 8) +
+	fmant = (float64) ((int) ieee[3] + (int) (ieee[2] << 8) +
               (int) ((ieee[1] | 128) << 16));
 	if (ieee[0] & 128) fmant = -fmant;
 	return (float) (ldexp(fmant, (int) (exp - 128 - 22)));
 }
 */
 
-func ieee2flt(ieee []unsigned_char) float {
-	var fmant double
+func ieee2flt(ieee []byte) float32 {
+	var fmant float64
 	var exp int
 
 	if (ieee[0]&127) == 0 && ieee[1] == 0 && ieee[2] == 0 && ieee[3] == 0 {
-		return float(0.0)
+		return float32(0.0)
 	}
 
 	exp = ((int(ieee[0]) & 127) << 1) + (int(ieee[1]) >> 7)
-	fmant = (double)(int(ieee[3]) + (int(ieee[2]) << 8) +
+	fmant = (float64)(int(ieee[3]) + (int(ieee[2]) << 8) +
 		(int(ieee[1]|128) << 16))
 	if (ieee[0] & 128) != 0 {
 		fmant = -fmant
 	}
-	return float(ldexp(fmant, (int)(exp-128-22)))
+	return float32(ldexp(fmant, (int)(exp-128-22)))
 }

@@ -6,19 +6,19 @@ const M_PI_4 = 0.78539816339744830962 /* pi/4 */
 
 const M_PI_2 = 1.57079632679489661923 /* pi/2 */
 
-func todegrees(x double) double {
+func todegrees(x float64) float64 {
 	return x * (180.0 / M_PI)
 }
 
-func regular2ll(sec [][]unsigned_char, lat *[]double, lon *[]double) error {
+func regular2ll(sec [][]byte, lat *[]float64, lon *[]float64) error {
 
 	var basic_ang, sub_ang int
-	var units, dlat, dlon, lat1, lat2, lon1, lon2 double
-	var e, w, n, s, dx, dy double
+	var units, dlat, dlon, lat1, lat2, lon1, lon2 float64
+	var e, w, n, s, dx, dy float64
 
 	var i, j unsigned_int
-	var llat, llon []double
-	var gds []unsigned_char
+	var llat, llon []float64
+	var gds []byte
 	var nnx, nny unsigned_int
 	var nres, nscan int
 	var nnpnts unsigned_int
@@ -34,34 +34,34 @@ func regular2ll(sec [][]unsigned_char, lat *[]double, lon *[]double) error {
 	}
 
 	/*
-		   if ((*lat = (double *) malloc(((size_t) nnpnts) * sizeof(double))) == NULL) {
+		   if ((*lat = (float64 *) malloc(((size_t) nnpnts) * sizeof(float64))) == NULL) {
 			   return fatal_error("regular2ll memory allocation failed","");
 		   }
 	*/
-	*lat = make([]double, nnpnts, nnpnts)
+	*lat = make([]float64, nnpnts, nnpnts)
 	/*
-		   if ((*lon = (double *) malloc(((size_t) nnpnts) * sizeof(double))) == NULL) {
+		   if ((*lon = (float64 *) malloc(((size_t) nnpnts) * sizeof(float64))) == NULL) {
 			   return fatal_error("regular2ll memory allocation failed","");
 		   }
 	*/
-	*lon = make([]double, nnpnts, nnpnts)
+	*lon = make([]float64, nnpnts, nnpnts)
 
 	/* now figure out the grid coordinates mucho silly grib specification */
 
 	basic_ang = GDS_LatLon_basic_ang(gds)
 	sub_ang = GDS_LatLon_sub_ang(gds)
 	if basic_ang != 0 {
-		units = double(basic_ang) / double(sub_ang)
+		units = float64(basic_ang) / float64(sub_ang)
 	} else {
 		units = 0.000001
 	}
 
-	dlat = double(GDS_LatLon_dlat(gds)) * units
-	dlon = double(GDS_LatLon_dlon(gds)) * units
-	lat1 = double(GDS_LatLon_lat1(gds)) * units
-	lat2 = double(GDS_LatLon_lat2(gds)) * units
-	lon1 = double(GDS_LatLon_lon1(gds)) * units
-	lon2 = double(GDS_LatLon_lon2(gds)) * units
+	dlat = float64(GDS_LatLon_dlat(gds)) * units
+	dlon = float64(GDS_LatLon_dlon(gds)) * units
+	lat1 = float64(GDS_LatLon_lat1(gds)) * units
+	lat2 = float64(GDS_LatLon_lat2(gds)) * units
+	lon1 = float64(GDS_LatLon_lon1(gds)) * units
+	lon2 = float64(GDS_LatLon_lon2(gds)) * units
 
 	if lon1 < 0.0 || lon2 < 0.0 {
 		return fatal_error("BAD grid definition lon < zero", "")
@@ -86,7 +86,7 @@ func regular2ll(sec [][]unsigned_char, lat *[]double, lon *[]double) error {
 	}
 
 	if nny > 1 {
-		dy = (n - s) / double(nny-1)
+		dy = (n - s) / float64(nny-1)
 		if nres&16 != 0 { /* lat increment is valid */
 			if fabs(dy-dlat) > 0.001 {
 				return fatal_error("lat-lon grid: dlat is inconsistent", "")
@@ -107,13 +107,13 @@ func regular2ll(sec [][]unsigned_char, lat *[]double, lon *[]double) error {
 		w = lon1
 		e = lon2
 		if GDS_Scan_row_rev(nscan) && ((nres & 32) == 0) {
-			e = lon1 + (double(nnx)-1)*dlon
+			e = lon1 + (float64(nnx)-1)*dlon
 		}
 	} else {
 		w = lon2
 		e = lon1
 		if GDS_Scan_row_rev(nscan) && ((nres & 32) == 0) {
-			w = lon1 - (double(nnx)-1)*dlon
+			w = lon1 - (float64(nnx)-1)*dlon
 		}
 	}
 
@@ -140,7 +140,7 @@ func regular2ll(sec [][]unsigned_char, lat *[]double, lon *[]double) error {
 		}
 
 		if nnx > 1 {
-			dx = (e - w) / (double(nnx) - 1)
+			dx = (e - w) / (float64(nnx) - 1)
 			dx = fabs(dx)
 			if (nres & 32) != 0 { /* lon increment is valid */
 				if fabs(dx-fabs(dlon)) > 0.001 {
@@ -175,7 +175,7 @@ func regular2ll(sec [][]unsigned_char, lat *[]double, lon *[]double) error {
 	/* quasi-regular grid */
 	for j = 0; j < nny; j++ {
 		for i = 0; i < unsigned_int(variable_dim[j]); i++ {
-			llat[llatIndex] = s + double(j)*dy
+			llat[llatIndex] = s + float64(j)*dy
 			llatIndex++
 		}
 	}
@@ -184,13 +184,13 @@ func regular2ll(sec [][]unsigned_char, lat *[]double, lon *[]double) error {
 	llonIndex := 0
 	/* quasi-regular grid */
 	for j = 0; j < nny; j++ {
-		dx = (e - w) / double(variable_dim[j]-1)
+		dx = (e - w) / float64(variable_dim[j]-1)
 		for i = 0; i < unsigned_int(variable_dim[j]); i++ {
 			//*llon++ = w + i*dx >= 360.0 ? w + i*dx - 360.0: w + i*dx;
-			if w+double(i)*dx >= 360.0 {
-				llon[llonIndex] = w + double(i)*dx - 360.0
+			if w+float64(i)*dx >= 360.0 {
+				llon[llonIndex] = w + float64(i)*dx - 360.0
 			} else {
-				llon[llonIndex] = w + double(i)*dx
+				llon[llonIndex] = w + float64(i)*dx
 			}
 			llonIndex++
 		}
@@ -198,16 +198,16 @@ func regular2ll(sec [][]unsigned_char, lat *[]double, lon *[]double) error {
 	return nil
 } /* end regular2ll() */
 
-func rot_regular2ll(sec [][]unsigned_char, lat *[]double, lon *[]double) error {
+func rot_regular2ll(sec [][]byte, lat *[]float64, lon *[]float64) error {
 
-	var gds []unsigned_char
-	var units double
-	var tlon, tlat []double
-	var sp_lat, sp_lon, angle_rot double
-	var sin_a, cos_a double
+	var gds []byte
+	var units float64
+	var tlon, tlat []float64
+	var sp_lat, sp_lon, angle_rot float64
+	var sin_a, cos_a float64
 	var basic_ang, sub_ang int
 	var i, npnts unsigned_int
-	var a, b, r, pr, gr, pm, gm, glat, glon double
+	var a, b, r, pr, gr, pm, gm, glat, glon float64
 
 	/* get the lat-lon coordinates in rotated frame of referencee */
 	err := regular2ll(sec, lat, lon)
@@ -221,14 +221,14 @@ func rot_regular2ll(sec [][]unsigned_char, lat *[]double, lon *[]double) error {
 	basic_ang = GDS_LatLon_basic_ang(gds)
 	sub_ang = GDS_LatLon_sub_ang(gds)
 	if basic_ang != 0 {
-		units = double(basic_ang) / double(sub_ang)
+		units = float64(basic_ang) / float64(sub_ang)
 	} else {
 		units = 0.000001
 	}
 
-	sp_lat = double(GDS_RotLatLon_sp_lat(gds)) * units
-	sp_lon = double(GDS_RotLatLon_sp_lon(gds)) * units
-	angle_rot = double(GDS_RotLatLon_rotation(gds)) * units
+	sp_lat = float64(GDS_RotLatLon_sp_lat(gds)) * units
+	sp_lon = float64(GDS_RotLatLon_sp_lon(gds)) * units
+	angle_rot = float64(GDS_RotLatLon_rotation(gds)) * units
 
 	a = (M_PI / 180.0) * (90.0 + sp_lat)
 	b = (M_PI / 180.0) * sp_lon
@@ -256,15 +256,15 @@ func rot_regular2ll(sec [][]unsigned_char, lat *[]double, lon *[]double) error {
 	return nil
 }
 
-func mercator2ll(sec [][]unsigned_char, lat *[]double, lon *[]double) error {
+func mercator2ll(sec [][]byte, lat *[]float64, lon *[]float64) error {
 
-	var dx, dy, lat1, lat2, lon1, lon2 double
-	var llat, llon []double
+	var dx, dy, lat1, lat2, lon1, lon2 float64
+	var llat, llon []float64
 	var i, j unsigned_int
-	var dlon, circum double
+	var dlon, circum float64
 
-	var n, s, e, w, tmp, error_ double
-	var gds []unsigned_char
+	var n, s, e, w, tmp, error_ float64
+	var gds []byte
 
 	var nnx, nny unsigned_int
 	var nres, nscan int
@@ -292,7 +292,7 @@ func mercator2ll(sec [][]unsigned_char, lat *[]double, lon *[]double) error {
 
 	if GDS_Mercator_ori_angle(gds) != 0.0 {
 		return fprintf("cannot handle non-zero mercator orientation angle %f\n",
-			double(GDS_Mercator_ori_angle(gds)))
+			float64(GDS_Mercator_ori_angle(gds)))
 	}
 
 	if nnx < 1 || nny < 1 {
@@ -300,15 +300,15 @@ func mercator2ll(sec [][]unsigned_char, lat *[]double, lon *[]double) error {
 	}
 
 	/*
-			if ((*lat = (double *) malloc(((size_t) nnpnts) * sizeof(double))) == NULL) {
+			if ((*lat = (float64 *) malloc(((size_t) nnpnts) * sizeof(float64))) == NULL) {
 		        fatal_error("mercator2ll memory allocation failed","");
 		    }
-		    if ((*lon = (double *) malloc(((size_t) nnpnts) * sizeof(double))) == NULL) {
+		    if ((*lon = (float64 *) malloc(((size_t) nnpnts) * sizeof(float64))) == NULL) {
 		        fatal_error("mercator2ll memory allocation failed","");
 		    }
 	*/
-	*lat = make([]double, nnpnts, nnpnts)
-	*lon = make([]double, nnpnts, nnpnts)
+	*lat = make([]float64, nnpnts, nnpnts)
+	*lon = make([]float64, nnpnts, nnpnts)
 
 	/* now figure out the grid coordinates mucho silly grib specification */
 
@@ -348,12 +348,12 @@ func mercator2ll(sec [][]unsigned_char, lat *[]double, lon *[]double) error {
 	llat = *lat
 	llon = *lon
 
-	dlon = (e - w) / double(nnx-1)
+	dlon = (e - w) / float64(nnx-1)
 	radius, err := radius_earth(sec)
 	if err != nil {
 		return fatal_error_wrap(err, "Failed to execute radius_earth")
 	}
-	circum = 2.0 * M_PI * radius * cos(double(GDS_Mercator_latD(gds))*(M_PI/180.0))
+	circum = 2.0 * M_PI * radius * cos(float64(GDS_Mercator_latD(gds))*(M_PI/180.0))
 	dx = dx * 360.0 / circum
 
 	// dlon should be almost == to dx
@@ -369,11 +369,11 @@ func mercator2ll(sec [][]unsigned_char, lat *[]double, lon *[]double) error {
 
 	s = log(tan((45 + s/2) * M_PI / 180))
 	n = log(tan((45 + n/2) * M_PI / 180))
-	dy = (n - s) / (double(nny) - 1)
+	dy = (n - s) / (float64(nny) - 1)
 
 	llat_index := 0
 	for j = 0; j < nny; j++ {
-		tmp = (atan(exp(s+double(j)*dy))*180/M_PI - 45) * 2
+		tmp = (atan(exp(s+float64(j)*dy))*180/M_PI - 45) * 2
 		for i = 0; i < nnx; i++ {
 			llat[llat_index] = tmp
 			llat_index++
@@ -381,10 +381,10 @@ func mercator2ll(sec [][]unsigned_char, lat *[]double, lon *[]double) error {
 	}
 
 	for j = 0; j < nnx; j++ {
-		if w+double(j)*dx >= 360.0 {
-			llon[j] = w + double(j)*dx - 360.0
+		if w+float64(j)*dx >= 360.0 {
+			llon[j] = w + float64(j)*dx - 360.0
 		} else {
-			llon[j] = w + double(j)*dx
+			llon[j] = w + float64(j)*dx
 		}
 	}
 	for j = nnx; j < nnpnts; j++ {
@@ -393,13 +393,13 @@ func mercator2ll(sec [][]unsigned_char, lat *[]double, lon *[]double) error {
 	return nil
 } /* end mercator2ll() */
 
-func polar2ll(sec [][]unsigned_char, llat *[]double, llon *[]double) error {
+func polar2ll(sec [][]byte, llat *[]float64, llon *[]float64) error {
 
-	var lat, lon []double
-	var gds []unsigned_char
+	var lat, lon []float64
+	var gds []byte
 
-	var dx, dy, orient, de, de2, dr, tmp, xp, yp, h, lat1, lon1, dr2 double
-	var di, dj, LatD double
+	var dx, dy, orient, de, de2, dr, tmp, xp, yp, h, lat1, lon1, dr2 float64
+	var di, dj, LatD float64
 	var ix, iy unsigned_int
 	var nnx, nny unsigned_int
 	var nres, nscan int
@@ -419,15 +419,15 @@ func polar2ll(sec [][]unsigned_char, llat *[]double, llon *[]double) error {
 	nx = size_t(nnx) /* size_t, multiplications will not overflow */
 
 	/*
-			if ((*llat = (double *) malloc(((size_t) nnpnts) * sizeof(double))) == NULL) {
+			if ((*llat = (float64 *) malloc(((size_t) nnpnts) * sizeof(float64))) == NULL) {
 		        fatal_error("polar2ll memory allocation failed","");
 		    }
-		    if ((*llon = (double *) malloc(((size_t) nnpnts) * sizeof(double))) == NULL) {
+		    if ((*llon = (float64 *) malloc(((size_t) nnpnts) * sizeof(float64))) == NULL) {
 		        fatal_error("polar2ll memory allocation failed","");
 			}
 	*/
-	*llat = make([]double, nnpnts, nnpnts)
-	*llat = make([]double, nnpnts, nnpnts)
+	*llat = make([]float64, nnpnts, nnpnts)
+	*llat = make([]float64, nnpnts, nnpnts)
 
 	lat = *llat
 	lon = *llon
@@ -474,18 +474,18 @@ func polar2ll(sec [][]unsigned_char, llat *[]double, llon *[]double) error {
 
 	// added 12/11
 	if !(GDS_Scan_y(nscan)) {
-		yp = yp - double(nny) + 1
+		yp = yp - float64(nny) + 1
 	}
 	if !(GDS_Scan_x(nscan)) {
-		xp = xp - double(nnx) + 1
+		xp = xp - float64(nnx) + 1
 	}
 
 	de2 = de * de
 	//#pragma omp parallel for private(iy,ix,di,dj,dr2,tmp)
 	for iy = 0; iy < nny; iy++ {
 		for ix = 0; ix < nnx; ix++ {
-			di = (double(ix) - xp) * dx
-			dj = (double(iy) - yp) * dy
+			di = (float64(ix) - xp) * dx
+			dj = (float64(iy) - yp) * dy
 			dr2 = di*di + dj*dj
 			if dr2 < de2*1e-6 {
 				lon[ix+iy*unsigned_int(nx)] = 0.0
@@ -506,20 +506,20 @@ func polar2ll(sec [][]unsigned_char, llat *[]double, llon *[]double) error {
 	return nil
 }
 
-func lambert2ll(sec [][]unsigned_char, llat *[]double, llon *[]double) error {
+func lambert2ll(sec [][]byte, llat *[]float64, llon *[]float64) error {
 
-	var n double
-	var lat, lon []double
+	var n float64
+	var lat, lon []float64
 
-	var dx, dy, lat1r, lon1r, lon2d, lon2r, latin1r, latin2r double
-	var lond, latd, d_lon double
-	var f, rho, rhoref, theta, startx, starty double
+	var dx, dy, lat1r, lon1r, lon2d, lon2r, latin1r, latin2r float64
+	var lond, latd, d_lon float64
+	var f, rho, rhoref, theta, startx, starty float64
 	var nnx, nny unsigned_int
 	var nres, nscan int
-	var x, y, tmp double
-	var gds []unsigned_char
-	var latDr double
-	var earth_radius double
+	var x, y, tmp float64
+	var gds []byte
+	var latDr float64
+	var earth_radius float64
 	var j, nnpnts unsigned_int
 
 	var n_variable_dim int
@@ -589,15 +589,15 @@ func lambert2ll(sec [][]unsigned_char, llat *[]double, llon *[]double) error {
 	starty = rhoref - rho*cos(theta)
 
 	/*
-		if ((*llat = (double *) malloc(((size_t) nnpnts) * sizeof(double))) == NULL) {
+		if ((*llat = (float64 *) malloc(((size_t) nnpnts) * sizeof(float64))) == NULL) {
 			fatal_error("lambert2ll memory allocation failed","");
 		}
-		if ((*llon = (double *) malloc(((size_t) nnpnts) * sizeof(double))) == NULL) {
+		if ((*llon = (float64 *) malloc(((size_t) nnpnts) * sizeof(float64))) == NULL) {
 			fatal_error("lambert2ll memory allocation failed","");
 		}
 	*/
-	*llat = make([]double, nnpnts, nnpnts)
-	*llat = make([]double, nnpnts, nnpnts)
+	*llat = make([]float64, nnpnts, nnpnts)
+	*llat = make([]float64, nnpnts, nnpnts)
 
 	lat = *llat
 	lon = *llon

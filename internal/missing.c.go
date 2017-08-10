@@ -28,7 +28,7 @@ var bitsum = []int{
 	5, 4, 4, 3, 4, 3, 3, 2, 4, 3, 3, 2, 3, 2, 2, 1,
 	4, 3, 3, 2, 3, 2, 2, 1, 3, 2, 2, 1, 2, 1, 1, 0}
 
-func missing_points(bitmap []unsigned_char, n unsigned_int) unsigned_int {
+func missing_points(bitmap []byte, n unsigned_int) unsigned_int {
 
 	var count, i, j, rem unsigned_int
 	if bitmap == nil {

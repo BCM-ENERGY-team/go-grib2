@@ -1,7 +1,7 @@
 package internal
 
-func stat_proc_verf_time(sec [][]unsigned_char, year *int, month *int, day *int, hour *int, minute *int, second *int) int {
-	var stat_proc_time []unsigned_char
+func stat_proc_verf_time(sec [][]byte, year *int, month *int, day *int, hour *int, minute *int, second *int) int {
+	var stat_proc_time []byte
 
 	stat_proc_time = stat_proc_verf_time_location(sec)
 
@@ -24,7 +24,7 @@ func stat_proc_verf_time(sec [][]unsigned_char, year *int, month *int, day *int,
  *  ie location of overall time
  *
  */
-func stat_proc_verf_time_location(sec [][]unsigned_char) []unsigned_char {
+func stat_proc_verf_time_location(sec [][]byte) []byte {
 	var i, j, center, nb int
 	i = code_table_4_0(sec)
 	center = GB2_Center(sec)
@@ -68,7 +68,7 @@ func stat_proc_verf_time_location(sec [][]unsigned_char) []unsigned_char {
 /*
  * returns number of particle size distributions used by template 4.57
  */
-func number_of_mode(sec [][]unsigned_char) int {
+func number_of_mode(sec [][]byte) int {
 	var pdt int
 	pdt = code_table_4_0(sec)
 	if pdt == 57 {
@@ -84,9 +84,9 @@ func number_of_mode(sec [][]unsigned_char) int {
  *      old: return unsigned value, ! code_4_4, return 0xffffffff;
  *      new: return signed value    ! code_4_4, return 0
  */
-func forecast_time_in_units(sec [][]unsigned_char) int {
+func forecast_time_in_units(sec [][]byte) int {
 
-	var code_4_4 []unsigned_char
+	var code_4_4 []byte
 	var pdt int
 
 	code_4_4 = code_table_4_4_location(sec)
@@ -102,9 +102,9 @@ func forecast_time_in_units(sec [][]unsigned_char) int {
 	// return 0xffffffff;
 }
 
-func fixed_surfaces(sec [][]unsigned_char, type1 *int, surface1 *float, undef_val1 *int, type2 *int, surface2 *float, undef_val2 *int) error {
+func fixed_surfaces(sec [][]byte, type1 *int, surface1 *float32, undef_val1 *int, type2 *int, surface2 *float32, undef_val2 *int) error {
 
-	var p1, p2 []unsigned_char
+	var p1, p2 []byte
 	*undef_val1 = 1
 	*undef_val2 = 1
 	*surface1 = UNDEFINED

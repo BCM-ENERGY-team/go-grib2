@@ -18,7 +18,7 @@ package internal
     return t;
 }
 */
-func uint4_missing(p []unsigned_char) unsigned_int {
+func uint4_missing(p []byte) unsigned_int {
 	var t int
 
 	t = int(p[0])
@@ -44,7 +44,7 @@ int int2(unsigned const char *p) {
 	return i;
 }
 */
-func int2(p []unsigned_char) int {
+func int2(p []byte) int {
 	var i int
 	if (p[0] & 0x80) != 0 {
 		i = -(((int(p[0]) & 0x7f) << 8) + int(p[1]))
@@ -59,29 +59,29 @@ unsigned int uint2(unsigned char const *p) {
 	return (p[0] << 8) + p[1];
 }
 */
-func uint2(p []unsigned_char) unsigned_int {
+func uint2(p []byte) unsigned_int {
 	return (unsigned_int(p[0]) << 8) + unsigned_int(p[1])
 }
 
 //
 // floating point values are often represented as int * power of 10
 //
-func scaled2flt(scale_factor int, scale_value int) float {
+func scaled2flt(scale_factor int, scale_value int) float32 {
 	if scale_factor == 0 {
-		return float(scale_value)
+		return float32(scale_value)
 	}
 	if scale_factor < 0 {
-		return float(double(scale_value) * Int_Power(10.0, -scale_factor))
+		return float32(float64(scale_value) * Int_Power(10.0, -scale_factor))
 	}
-	return float(double(scale_value) / Int_Power(10.0, scale_factor))
+	return float32(float64(scale_value) / Int_Power(10.0, scale_factor))
 }
 
-func scaled2dbl(scale_factor int, scale_value int) double {
+func scaled2dbl(scale_factor int, scale_value int) float64 {
 	if scale_factor == 0 {
-		return double(scale_value)
+		return float64(scale_value)
 	}
 	if scale_factor < 0 {
-		return double(scale_value) * Int_Power(10.0, -scale_factor)
+		return float64(scale_value) * Int_Power(10.0, -scale_factor)
 	}
-	return double(scale_value) / Int_Power(10.0, scale_factor)
+	return float64(scale_value) / Int_Power(10.0, scale_factor)
 }

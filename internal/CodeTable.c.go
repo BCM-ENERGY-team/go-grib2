@@ -1,7 +1,7 @@
 package internal
 
-func code_table_1_2(sec [][]unsigned_char) int {
-	var p []unsigned_char
+func code_table_1_2(sec [][]byte) int {
+	var p []byte
 	p = code_table_1_2_location(sec)
 	if p == nil {
 		return -1
@@ -9,7 +9,7 @@ func code_table_1_2(sec [][]unsigned_char) int {
 	return int(p[0])
 }
 
-func code_table_1_2_location(sec [][]unsigned_char) []unsigned_char {
+func code_table_1_2_location(sec [][]byte) []byte {
 	return sec[1][11:]
 }
 
@@ -18,11 +18,11 @@ int code_table_3_1(unsigned char **sec) {
     return  (int) uint2(sec[3]+12);
 }
 */
-func code_table_3_1(sec [][]unsigned_char) int {
+func code_table_3_1(sec [][]byte) int {
 	return int(uint2(sec[3][12:]))
 }
 
-func code_table_3_2_location(sec [][]unsigned_char) []unsigned_char {
+func code_table_3_2_location(sec [][]byte) []byte {
 	var grid_def, center int
 	grid_def = code_table_3_1(sec)
 
@@ -50,12 +50,12 @@ func code_table_3_2_location(sec [][]unsigned_char) []unsigned_char {
 	return nil
 }
 
-func code_table_4_0(sec [][]unsigned_char) int {
+func code_table_4_0(sec [][]byte) int {
 	return GB2_ProdDefTemplateNo(sec)
 }
 
-func code_table_4_4(sec [][]unsigned_char) int {
-	var p []unsigned_char
+func code_table_4_4(sec [][]byte) int {
+	var p []byte
 	p = code_table_4_4_location(sec)
 	if p == nil {
 		return -1
@@ -63,7 +63,7 @@ func code_table_4_4(sec [][]unsigned_char) int {
 	return int(p[0])
 }
 
-func code_table_4_4_location(sec [][]unsigned_char) []unsigned_char {
+func code_table_4_4_location(sec [][]byte) []byte {
 	var pdt, center, n int
 	pdt = GB2_ProdDefTemplateNo(sec)
 	center = GB2_Center(sec)
@@ -104,7 +104,7 @@ func code_table_4_4_location(sec [][]unsigned_char) []unsigned_char {
 	return nil
 }
 
-func code_table_4_5a_location(sec [][]unsigned_char) ([]unsigned_char, error) {
+func code_table_4_5a_location(sec [][]byte) ([]byte, error) {
 	var pdt, center, n int
 	pdt = GB2_ProdDefTemplateNo(sec)
 	center = GB2_Center(sec)
@@ -149,7 +149,7 @@ func code_table_4_5a_location(sec [][]unsigned_char) ([]unsigned_char, error) {
 	}
 }
 
-func code_table_4_5b_location(sec [][]unsigned_char) ([]unsigned_char, error) {
+func code_table_4_5b_location(sec [][]byte) ([]byte, error) {
 	var pdt, center, n int
 	pdt = GB2_ProdDefTemplateNo(sec)
 	center = GB2_Center(sec)
@@ -195,10 +195,10 @@ func code_table_4_5b_location(sec [][]unsigned_char) ([]unsigned_char, error) {
 	}
 }
 
-func code_table_5_0(sec [][]unsigned_char) int {
+func code_table_5_0(sec [][]byte) int {
 	return int(uint2(sec[5][9:]))
 }
 
-func code_table_6_0(sec [][]unsigned_char) int {
+func code_table_6_0(sec [][]byte) int {
 	return int(sec[6][5])
 }

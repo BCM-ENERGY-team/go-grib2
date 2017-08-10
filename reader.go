@@ -4,7 +4,7 @@ import (
 	"encoding/binary"
 	"time"
 
-	"github.com/amsokol/go-grib2/internal"
+	"github.com/BCM-team/go-grib2/internal"
 	"github.com/pkg/errors"
 )
 

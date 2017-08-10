@@ -15,7 +15,7 @@ package internal
  * note: code assumes an integer >= 32 bits
  *
  * 7/98 v1.2.1 fix bug for bitmaps and nbit >= 25 found by Larry Brasfield
- * 2/01 v1.2.2 changed jj from long int to double
+ * 2/01 v1.2.2 changed jj from long int to float64
  * 3/02 v1.2.3 added unpacking extensions for spectral data
  *             Luis Kornblueh, MPIfM
  * 7/06 v.1.2.4 fixed some bug complex packed data was not set to undefined
@@ -25,17 +25,17 @@ package internal
  */
 
 var mask = []int{0, 1, 3, 7, 15, 31, 63, 127, 255}
-var shift = []double{1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0, 256.0}
+var shift = []float64{1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0, 256.0}
 
 /*
- void unpk_0(float *flt, unsigned char *bits0, unsigned char *bitmap0,
-	 int n_bits, unsigned int n, double ref, double scale, double dec_scale) {
+ void unpk_0(float32 *flt, unsigned char *bits0, unsigned char *bitmap0,
+	 int n_bits, unsigned int n, float64 ref, float64 scale, float64 dec_scale) {
 
 	 unsigned char *bits, *bitmap;
 
 	 int c_bits, j_bits, nthreads;
 	 unsigned int map_mask, bbits, i, j, k, n_missing, ndef, di;
-	 double jj;
+	 float64 jj;
 
 	 ref = ref * dec_scale;
 	 scale = scale * dec_scale;
@@ -119,11 +119,11 @@ var shift = []double{1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0, 256.0}
 		 j_bits = n_bits;
 		 while (c_bits <= j_bits) {
 			 if (c_bits == 8) {
-			 jj = jj * 256.0  + (double) (*bits++);
+			 jj = jj * 256.0  + (float64) (*bits++);
 			 j_bits -= 8;
 			 }
 			 else {
-			 jj = (jj * shift[c_bits]) + (double) (*bits & mask[c_bits]);
+			 jj = (jj * shift[c_bits]) + (float64) (*bits & mask[c_bits]);
 			 bits++;
 			 j_bits -= c_bits;
 			 c_bits = 8;
@@ -131,7 +131,7 @@ var shift = []double{1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0, 256.0}
 		 }
 		 if (j_bits) {
 			 c_bits -= j_bits;
-			 jj = (jj * shift[j_bits]) + (double) ((*bits >> c_bits) & mask[j_bits]);
+			 jj = (jj * shift[j_bits]) + (float64) ((*bits >> c_bits) & mask[j_bits]);
 		 }
 		 *flt++ = ref + scale*jj;
 		 }
@@ -140,13 +140,13 @@ var shift = []double{1.0, 2.0, 4.0, 8.0, 16.0, 32.0, 64.0, 128.0, 256.0}
  }
 */
 
-func unpk_0(flt []float, bits0 []unsigned_char, bitmap0 []unsigned_char, n_bits int, n unsigned_int, ref double, scale double, dec_scale double) error {
+func unpk_0(flt []float32, bits0 []byte, bitmap0 []byte, n_bits int, n unsigned_int, ref float64, scale float64, dec_scale float64) error {
 
-	var bits, bitmap []unsigned_char
+	var bits, bitmap []byte
 
 	var c_bits, j_bits, nthreads int
 	var map_mask, bbits, i, j, k, n_missing, ndef, di unsigned_int
-	var jj double
+	var jj float64
 
 	ref = ref * dec_scale
 	scale = scale * dec_scale
@@ -188,7 +188,7 @@ func unpk_0(flt []float, bits0 []unsigned_char, bitmap0 []unsigned_char, n_bits 
 					return fatal_error_wrap(err, "Failed to execute rd_bitstream_flt")
 				}
 				for j = i + n_missing; j < i+k+n_missing; j++ {
-					flt[j] = float(ref + scale*double(flt[j]))
+					flt[j] = float32(ref + scale*float64(flt[j]))
 				}
 			}
 		}
@@ -250,11 +250,11 @@ func unpk_0(flt []float, bits0 []unsigned_char, bitmap0 []unsigned_char, n_bits 
 			j_bits = n_bits
 			for c_bits <= j_bits {
 				if c_bits == 8 {
-					jj = jj*256.0 + double(bits[bits_index])
+					jj = jj*256.0 + float64(bits[bits_index])
 					bits_index++
 					j_bits -= 8
 				} else {
-					jj = (jj * shift[c_bits]) + double(int(bits[bits_index])&mask[c_bits])
+					jj = (jj * shift[c_bits]) + float64(int(bits[bits_index])&mask[c_bits])
 					bits_index++
 					j_bits -= c_bits
 					c_bits = 8
@@ -262,9 +262,9 @@ func unpk_0(flt []float, bits0 []unsigned_char, bitmap0 []unsigned_char, n_bits 
 			}
 			if j_bits != 0 {
 				c_bits -= j_bits
-				jj = (jj * shift[j_bits]) + double((int(bits[bits_index])>>unsigned_int(c_bits))&mask[j_bits])
+				jj = (jj * shift[j_bits]) + float64((int(bits[bits_index])>>unsigned_int(c_bits))&mask[j_bits])
 			}
-			flt[flt_index] = float(ref + scale*jj)
+			flt[flt_index] = float32(ref + scale*jj)
 			flt_index++
 		}
 	}

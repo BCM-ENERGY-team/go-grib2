@@ -4,9 +4,9 @@ var ones = []int{0, 1, 3, 7, 15, 31, 63, 127, 255}
 
 /*
  * void rd_bitstream_flt
- *   rd_bitstream_flt() is like rd_bitstream() except that returns a float instead of int
+ *   rd_bitstream_flt() is like rd_bitstream() except that returns a float32 instead of int
  */
-func rd_bitstream_flt(p []unsigned_char, offset int, u []float, n_bits int, n int) error {
+func rd_bitstream_flt(p []byte, offset int, u []float32, n_bits int, n int) error {
 
 	var tbits unsigned_int
 	var i, t_bits, new_t_bits int
@@ -43,17 +43,17 @@ func rd_bitstream_flt(p []unsigned_char, offset int, u []float, n_bits int, n in
 
 		if n_bits > t_bits {
 			new_t_bits = 8 - (n_bits - t_bits)
-			u[i] = float(int(tbits<<unsigned_int(n_bits-t_bits) | (unsigned_int(p[p_index]) >> unsigned_int(new_t_bits))))
+			u[i] = float32(int(tbits<<unsigned_int(n_bits-t_bits) | (unsigned_int(p[p_index]) >> unsigned_int(new_t_bits))))
 			t_bits = new_t_bits
 			tbits = unsigned_int(p[p_index]) & unsigned_int(ones[t_bits])
 			p_index++
 		} else if n_bits == t_bits {
-			u[i] = float(tbits)
+			u[i] = float32(tbits)
 			tbits = 0
 			t_bits = 0
 		} else {
 			t_bits -= n_bits
-			u[i] = float(tbits >> unsigned_int(t_bits))
+			u[i] = float32(tbits >> unsigned_int(t_bits))
 			tbits = tbits & unsigned_int(ones[t_bits])
 		}
 	}

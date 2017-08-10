@@ -17,8 +17,8 @@ int reftime(unsigned char **sec, int *year, int *month, int *day, int *hour, int
     return 0;
 }
 */
-func reftime(sec [][]unsigned_char, year *int, month *int, day *int, hour *int, minute *int, second *int) {
-	var p []unsigned_char
+func reftime(sec [][]byte, year *int, month *int, day *int, hour *int, minute *int, second *int) {
+	var p []byte
 
 	p = sec[1]
 	*year = (int(p[12]) << 8) | int(p[13])
@@ -90,7 +90,7 @@ func reftime(sec [][]unsigned_char, year *int, month *int, day *int, hour *int, 
     }
 */
 
-func verftime(sec [][]unsigned_char, year *int, month *int, day *int, hour *int, minute *int, second *int) error {
+func verftime(sec [][]byte, year *int, month *int, day *int, hour *int, minute *int, second *int) error {
 	var units, i, j int
 	var dtime int
 

@@ -2,10 +2,10 @@ package internal
 
 /* function to return the size of the earth */
 
-func radius_earth(sec [][]unsigned_char) (double, error) {
+func radius_earth(sec [][]byte) (float64, error) {
 	var table_3_2 int
-	var radius double
-	var p []unsigned_char
+	var radius float64
+	var p []byte
 	var factor, value int
 
 	p = code_table_3_2_location(sec)

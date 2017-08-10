@@ -12,7 +12,7 @@ package internal
  * v1.4 Wesley Ebisuzaki 2/2012 fixed search_gribtab for local tables
  * v1.5 Wesley Ebisuzaki 4/2013 gribtab -> gribtable, added user_gribtable
  */
-func getName(sec [][]unsigned_char, name *string, desc *string, unit *string) error {
+func getName(sec [][]byte, name *string, desc *string, unit *string) error {
 
 	var discipline /*center, mastertab, localtab,*/, parmcat, parmnum int
 	var pdt int
@@ -58,7 +58,7 @@ func getName(sec [][]unsigned_char, name *string, desc *string, unit *string) er
 	return nil
 }
 
-func search_gribtable(gts []gribtable_s, sec [][]unsigned_char) (*gribtable_s, error) {
+func search_gribtable(gts []gribtable_s, sec [][]byte) (*gribtable_s, error) {
 	var discipline, center, mastertab, localtab, parmcat, parmnum int
 	var use_local_table bool
 	// static int count = 0;

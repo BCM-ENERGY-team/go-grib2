@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-func get_time(p []unsigned_char, year *int, month *int, day *int, hour *int, minute *int, second *int) {
+func get_time(p []byte, year *int, month *int, day *int, hour *int, minute *int, second *int) {
 	*year = (int(p[0]) << 8) | int(p[1])
 	*month = int(p[2])
 	*day = int(p[3])

@@ -197,10 +197,10 @@ var level_table = []string{
 	/* 191 */ "reserved",
 }
 
-func f_lev(sec [][]unsigned_char, inv_out *string) error {
+func f_lev(sec [][]byte, inv_out *string) error {
 
 	var level_type1, level_type2 int
-	var val1, val2 float
+	var val1, val2 float32
 	var undef_val1, undef_val2 int
 	var center, subcenter int
 
@@ -237,7 +237,7 @@ func f_lev(sec [][]unsigned_char, inv_out *string) error {
  * level2 is for layers
  */
 
-func level2(type1 int, undef_val1 int, value1 float, type2 int, undef_val2 int, value2 float, center int, subcenter int, inv_out *string) {
+func level2(type1 int, undef_val1 int, value1 float32, type2 int, undef_val2 int, value2 float32, center int, subcenter int, inv_out *string) {
 	if type1 == 100 && type2 == 100 {
 		*inv_out += sprintf("%g-%g mb", value1/100, value2/100)
 	} else if type1 == 102 && type2 == 102 {
@@ -281,7 +281,7 @@ func level2(type1 int, undef_val1 int, value1 float, type2 int, undef_val2 int, 
 /*
  * level1 is for a single level (not a layer)
  */
-func level1(type_ int, undef_val int, val float, center int, subcenter int, inv_out *string) {
+func level1(type_ int, undef_val int, val float32, center int, subcenter int, inv_out *string) {
 
 	var string_ string
 

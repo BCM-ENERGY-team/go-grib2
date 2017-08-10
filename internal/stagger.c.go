@@ -13,11 +13,11 @@ package internal
  *
  * like many programs, stagger requires grid to be on we:sn order
  */
-func stagger(sec [][]unsigned_char, assumed_npnts unsigned_int, x []double, y []double, n_variable_dim *int, variable_dim *[]int, raw_variable_dim *[]int) error {
+func stagger(sec [][]byte, assumed_npnts unsigned_int, x []float64, y []float64, n_variable_dim *int, variable_dim *[]int, raw_variable_dim *[]int) error {
 	var nx, ny, res, scan int
 	var npnts unsigned_int
 	var nnx, nx_even, nx_odd, nx2 int
-	var x0, y0, dx_offset, dx_offset_even, dx_offset_odd, dy_offset double
+	var x0, y0, dx_offset, dx_offset_even, dx_offset_odd, dy_offset float64
 	var i, ix, iy, n unsigned_int
 
 	var reduced_grid, dx_off_odd, dx_off_even, dy_off int
@@ -65,21 +65,21 @@ func stagger(sec [][]unsigned_char, assumed_npnts unsigned_int, x []double, y []
 
 	// dx_offset_odd  = reduced_grid ? 0.5 * dx_off_odd  : 0.5 * dx_off_odd  * dx;
 	if reduced_grid != 0 {
-		dx_offset_odd = 0.5 * double(dx_off_odd)
+		dx_offset_odd = 0.5 * float64(dx_off_odd)
 	} else {
-		dx_offset_odd = 0.5 * double(dx_off_odd) * double(dx)
+		dx_offset_odd = 0.5 * float64(dx_off_odd) * float64(dx)
 	}
 	// dx_offset_even = reduced_grid ? 0.5 * dx_off_even : 0.5 * dx_off_even * dx;
 	if reduced_grid != 0 {
-		dx_offset_even = 0.5 * double(dx_off_even)
+		dx_offset_even = 0.5 * float64(dx_off_even)
 	} else {
-		dx_offset_even = 0.5 * double(dx_off_even) * double(dx)
+		dx_offset_even = 0.5 * float64(dx_off_even) * float64(dx)
 	}
 	// dy_offset = reduced_grid ? 0.5 * dy_off : 0.5 * dy_off * dy;
 	if reduced_grid != 0 {
-		dy_offset = 0.5 * double(dy_off)
+		dy_offset = 0.5 * float64(dy_off)
 	} else {
-		dy_offset = 0.5 * double(dy_off) * double(dy)
+		dy_offset = 0.5 * float64(dy_off) * float64(dy)
 	}
 
 	nx_odd = nx - (dx_off_odd & reduced_grid)
@@ -108,17 +108,17 @@ func stagger(sec [][]unsigned_char, assumed_npnts unsigned_int, x []double, y []
 
 	/* return X[] and Y[] relative to the first grid point but on a we:sn grid */
 
-	// x0 = (dx > 0) ? 0.0 : 1.0 - (double) nx;
+	// x0 = (dx > 0) ? 0.0 : 1.0 - (float64) nx;
 	if dx > 0 {
 		x0 = 0.0
 	} else {
-		x0 = 1.0 - double(nx)
+		x0 = 1.0 - float64(nx)
 	}
-	//y0 = (dy > 0) ? 0.0 : 1.0 - (double) ny;
+	//y0 = (dy > 0) ? 0.0 : 1.0 - (float64) ny;
 	if dy > 0 {
 		y0 = 0.0
 	} else {
-		y0 = 1.0 - double(ny)
+		y0 = 1.0 - float64(ny)
 	}
 
 	for iy = 0; iy < unsigned_int(ny); iy++ {
@@ -143,8 +143,8 @@ func stagger(sec [][]unsigned_char, assumed_npnts unsigned_int, x []double, y []
 			dx_offset = dx_offset_odd
 		}
 		for ix = 0; ix < unsigned_int(nnx); ix++ {
-			x[i+ix] = x0 + dx_offset + double(ix)
-			y[i+ix] = y0 + dy_offset + double(iy)
+			x[i+ix] = x0 + dx_offset + float64(ix)
+			y[i+ix] = y0 + dy_offset + float64(iy)
 		}
 	}
 

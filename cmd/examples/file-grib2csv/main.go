@@ -6,7 +6,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/amsokol/go-grib2"
+	"github.com/BCM-team/go-grib2"
 )
 
 func main() {
